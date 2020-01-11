@@ -1,6 +1,12 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 
+from .models import Topping
+
 # Create your views here.
-def index(request):
-    return HttpResponse("Successfully Logged In")
+def menu(request):
+    context = {
+        "toppings": Topping.objects.all()
+    }
+    return render(request, "menu.html", context)
+

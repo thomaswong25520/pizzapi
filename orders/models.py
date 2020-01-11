@@ -8,7 +8,7 @@ class Topping(models.Model):
     def __str__(self):
         return(f"{self.name}")
     
-
+    
 class Pizza(models.Model):
     PIZZA_SIZES = (
         ('S', 'Small'),

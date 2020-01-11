@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Menu
+{% endblock %}
+
+{% block body %}
+  {% if user.is_authenticated %}
+    <h2> Menu </h2>
+    <ul>
+      {% for topping in toppings %}
+	<li>
+	  {{ topping }}
+	</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>You are not logged in ! You should not be able to see this</p>
+    <a href="{% url 'login' %}">login</a>
+  {% endif %}
+
+
+{% endblock %}
