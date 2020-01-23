@@ -6,14 +6,34 @@
 
 {% block body %}
   {% if user.is_authenticated %}
+
+
+    {% if messages %}
+      <ul>
+	{% for message in messages %}
+	  <li>{{ message }}</li>
+	{% endfor %}
+      </ul>
+    {% endif %}
+
+    <h1> Welcome {{ user.username }}</h1>
+
     <h2> Menu </h2>
     <ul>
       {% for topping in toppings %}
 	<li>
 	  {{ topping }}
+	  <form method="post" action="{% url 'menu' %}">
+	    {% csrf_token %}
+	    <button type="submit">Add Item</button>
+	  </form>
+
 	</li>
       {% endfor %}
     </ul>
+
+
+
   {% else %}
     <p>You are not logged in ! You should not be able to see this</p>
     <a href="{% url 'login' %}">login</a>
