@@ -1,9 +1,9 @@
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from django.contrib import messages
 
-from .models import Topping, User, ShoppingCart
+from .models import Topping, Pizza, Sub, Pasta, Salad, Dinner, User, ShoppingCart
 from .forms import SignUp
 
 
@@ -24,15 +24,32 @@ def signup(request):
     
 def menu(request):
     if request.method == 'POST':
-         messages.success(request, 'Item successfully added')
-         return redirect('menu')
+        messages.success(request, 'Item successfully added')
+        return redirect('menu')
     else:
         context = {
-            "toppings": Topping.objects.all()
+            "toppings": Topping.objects.all(),
+            "pizzas": Pizza.objects.all(),
+            "subs": Sub.objects.all(),
+            "salads": Pasta.objects.all(),
+            "dinners": Salad.objects.all()
         }
-    return render(request, "menu.html", context)
+        return render(request, "menu.html", context)
 
 
-# def cart(request):
-#     user_cart = ShoppingCart.objects.all()
-#     orders = 
+def cart(request, id=None):
+    
+    user_cart = get_object_or_404(ShoppingCart, id=id)
+    # user = User.objects.get(username=request.user.username)
+    messages.success(request, 'Successfully in mycart.html')
+    context = {
+        'user_cart': user_cart
+        # "toppings": Topping.objects.all(),
+        # "pizzas": Pizza.objects.all(),
+        # "subs": Sub.objects.all(),
+        # "salads": Pasta.objects.all(),
+        # "dinners": Salad.objects.all()
+    }
+    return render(request, "mycart.html", context)
+
+

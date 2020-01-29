@@ -18,6 +18,13 @@
 
     <h1> Welcome {{ user.username }}</h1>
 
+
+    <a href="/menu/mycart/{{user.id}}">View cart</a>
+
+    <!-- <form method="get" action="">
+	 <button type="submit">View cart</button>
+	 </form> -->
+
     <h2> Menu </h2>
     <ul>
       {% for topping in toppings %}
@@ -25,12 +32,75 @@
 	  {{ topping }}
 	  <form method="post" action="{% url 'menu' %}">
 	    {% csrf_token %}
+	    Qty:
+	    <input type="number" min="1" max="5">
 	    <button type="submit">Add Item</button>
 	  </form>
 
 	</li>
       {% endfor %}
     </ul>
+
+    <ul>
+      {% for topping in toppings %}
+	<li>
+	  {{ topping }}
+	  <form method="post" action="{% url 'menu' %}">
+	    {% csrf_token %}
+	    Qty:
+	    <input type="number" min="1" max="5">
+	    <button type="submit">Add Item</button>
+	  </form>
+
+	</li>
+      {% endfor %}
+    </ul>
+
+    <ul>
+      {% for topping in toppings %}
+	<li>
+	  {{ topping }}
+	  <form method="post" action="{% url 'menu' %}">
+	    {% csrf_token %}
+	    Qty:
+	    <input type="number" min="1" max="5">
+	    <button type="submit">Add Item</button>
+	  </form>
+
+	</li>
+      {% endfor %}
+    </ul>
+
+    <ul>
+      {% for topping in toppings %}
+	<li>
+	  {{ topping }}
+	  <form method="post" action="{% url 'menu' %}">
+	    {% csrf_token %}
+	    Qty:
+	    <input type="number" min="1" max="5">
+	    <button type="submit">Add Item</button>
+	  </form>
+
+	</li>
+      {% endfor %}
+    </ul>
+
+    <ul>
+      {% for topping in toppings %}
+	<li>
+	  {{ topping }}
+	  <form method="post" action="{% url 'menu' %}">
+	    {% csrf_token %}
+	    Qty:
+	    <input type="number" min="1" max="5">
+	    <button type="submit">Add Item</button>
+	  </form>
+
+	</li>
+      {% endfor %}
+    </ul>
+
 
 
 
