@@ -10,11 +10,6 @@ from django.contrib.auth import get_user_model
 
 # Create your models here.
 
-class PizzaAdmin(admin.ModelAdmin):
-    def save_related(self, request, form, formsets, change):
-        super(ModelAdmin, self).save_related(request, form, formsets, change)
-        form.instance.toppings.add(Topping.objects.get(name='Cheese'))
-
 
 class Topping(models.Model):
     name = models.CharField(max_length=64)
@@ -32,22 +27,28 @@ class Pizza(models.Model):
     pizza_type = models.CharField(max_length=64)
     pizza_size = models.CharField(max_length=1, choices=PIZZA_SIZES)
     qty_toppings = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(3)], default=0)
-    toppings = models.ManyToManyField(Topping, blank=True)
-    price = models.IntegerField(help_text="Price in $")
+    toppings = models.ManyToManyField(Topping, related_name='pizzas', blank=True)
+    price = models.FloatField(help_text="Price in $")
 
     
     def __str__(self):
         return f"Size: {self.get_pizza_size_display()}, Type: {self.pizza_type}, Number of Toppings: {self.qty_toppings},  Price: {self.price}, Toppings: {self.toppings.in_bulk()}"
     
-    def save(self, *args, **kwargs):
-        # if 'toppings' not in kwargs:
-        # kwargs.setdefault('force_insert', True)
-        # kwargs.setdefault('force_update', True)
-        super(Pizza, self).save(*args, **kwargs)
-        self.toppings.add(Topping.objects.get(name='Cheese'))
-        # kwargs.setdefault('toppings', Topping.objects.get(name='Cheese'))
+    # def save(self, *args, **kwargs):
+    #     super(Pizza, self).save(*args, **kwargs)
+    #     self.toppings.add(Topping.objects.get(name='Cheese'))
+
+    
+class Extra(models.Model):
+    name = models.CharField(max_length=64)
+    price = models.FloatField(help_text="Price in $")
+
+    def __str__(self):
+        return f"{self.name} : {self.price}"
+    
 
 
+    
 class Sub(models.Model):
     SUBS_SIZES = (
         ('S', 'Small'),
@@ -56,14 +57,18 @@ class Sub(models.Model):
 
     subs_size = models.CharField(max_length=1, choices=SUBS_SIZES)
     name = models.CharField(max_length=64)
-    price = models.IntegerField(help_text="Price in $")
+    extras = models.ManyToManyField(Extra, related_name='subs', blank=True)
+    price = models.FloatField(help_text="Price in $")
 
     def __str__(self):
         return f"{self.name}, {self.get_subs_size_display()} : {self.price}"
 
+    
+
+    
 class Pasta(models.Model):
     name = models.CharField(max_length=64)
-    price = models.IntegerField(help_text="Price in $")
+    price = models.FloatField(help_text="Price in $")
 
     def __str__(self):
         return f"{self.name} : {self.price}"
@@ -71,7 +76,7 @@ class Pasta(models.Model):
 
 class Salad(models.Model):
     name = models.CharField(max_length=64)
-    price = models.IntegerField(help_text="Price in $")
+    price = models.FloatField(help_text="Price in $")
 
     def __str__(self):
         return f"{self.name} : {self.price}"
@@ -86,7 +91,7 @@ class Dinner(models.Model):
     dinner_size = models.CharField(max_length=1, choices=DINNER_SIZES)
 
     name = models.CharField(max_length=64)
-    price = models.IntegerField(help_text="Price in $")
+    price = models.FloatField(help_text="Price in $")
 
     def __str__(self):
         return f"{self.name}, {self.get_dinner_size_display()} : {self.price}"

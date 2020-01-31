@@ -19,13 +19,15 @@
     <h1> Welcome {{ user.username }}</h1>
 
 
-    <a href="/menu/mycart/{{user.id}}">View cart</a>
+    <a href="/menu/mycart">View cart</a>
 
     <!-- <form method="get" action="">
 	 <button type="submit">View cart</button>
 	 </form> -->
 
-    <h2> Menu </h2>
+    <h1> Menu </h1>
+
+    <h2> Toppings </h2>
     <ul>
       {% for topping in toppings %}
 	<li>
@@ -41,10 +43,29 @@
       {% endfor %}
     </ul>
 
+    <h2> Pizzas </h2>
     <ul>
-      {% for topping in toppings %}
+      {% for pizza in pizzas %}
 	<li>
-	  {{ topping }}
+	  {{ pizza }}
+	  <form method="post" action="{% url 'menu' %}">
+	    {% csrf_token %}
+	    <p>{% pizza.name %}</p>
+	    <p>{% pizza.price %}</p>
+	    Qty:
+	    <input type="number" min="1" max="5">
+	    <button type="submit" name="pizza-btn">Add Item</button>
+	  </form>
+
+	</li>
+      {% endfor %}
+    </ul>
+
+    <h2> Subs </h2>
+    <ul>
+      {% for sub in subs %}
+	<li>
+	  {{ sub }}
 	  <form method="post" action="{% url 'menu' %}">
 	    {% csrf_token %}
 	    Qty:
@@ -56,10 +77,30 @@
       {% endfor %}
     </ul>
 
+
+    <h2> Pastas </h2>
     <ul>
-      {% for topping in toppings %}
+      {% for pasta in pastas %}
 	<li>
-	  {{ topping }}
+	  {{ pasta }}
+	  <form method="post" action="{% url 'menu' %}">
+	    {% csrf_token %}
+	    Qty:
+	    <input type="number" min="1" max="5">
+	    <button type="subdmit">Add Item</button>
+	  </form>
+
+	</li>
+      {% endfor %}
+    </ul>
+
+
+
+    <h2> Salads </h2>
+    <ul>
+      {% for salad in salads %}
+	<li>
+	  {{ salad }}
 	  <form method="post" action="{% url 'menu' %}">
 	    {% csrf_token %}
 	    Qty:
@@ -71,25 +112,12 @@
       {% endfor %}
     </ul>
 
-    <ul>
-      {% for topping in toppings %}
-	<li>
-	  {{ topping }}
-	  <form method="post" action="{% url 'menu' %}">
-	    {% csrf_token %}
-	    Qty:
-	    <input type="number" min="1" max="5">
-	    <button type="submit">Add Item</button>
-	  </form>
 
-	</li>
-      {% endfor %}
-    </ul>
-
+    <h2> Dinners </h2>
     <ul>
-      {% for topping in toppings %}
+      {% for dinner in dinners %}
 	<li>
-	  {{ topping }}
+	  {{ dinner }}
 	  <form method="post" action="{% url 'menu' %}">
 	    {% csrf_token %}
 	    Qty:

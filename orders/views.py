@@ -23,6 +23,7 @@ def signup(request):
             
     
 def menu(request):
+    user_cart = get_object_or_404(ShoppingCart, user_id=request.user.id)
     if request.method == 'POST':
         messages.success(request, 'Item successfully added')
         return redirect('menu')
@@ -31,25 +32,32 @@ def menu(request):
             "toppings": Topping.objects.all(),
             "pizzas": Pizza.objects.all(),
             "subs": Sub.objects.all(),
+            "pastas": Pasta.objects.all(),
             "salads": Pasta.objects.all(),
             "dinners": Salad.objects.all()
         }
         return render(request, "menu.html", context)
 
 
-def cart(request, id=None):
-    
-    user_cart = get_object_or_404(ShoppingCart, id=id)
-    # user = User.objects.get(username=request.user.username)
+# def cart(request, id=None):
+#     user_cart = get_object_or_404(ShoppingCart, id=id)
+#     messages.success(request, 'Successfully in mycart.html')
+#     context = {
+#         'user_cart': user_cart
+#         "toppings": Topping.objects.all(),
+#         "pizzas": Pizza.objects.all(),
+#         "subs": Sub.objects.all(),
+#         "salads": Pasta.objects.all(),
+#         "dinners": Salad.objects.all()
+#     }
+#     return render(request, "mycart.html", context)
+
+
+def cart(request):
+    user_cart = get_object_or_404(ShoppingCart, user_id=request.user.id)
     messages.success(request, 'Successfully in mycart.html')
     context = {
-        'user_cart': user_cart
-        # "toppings": Topping.objects.all(),
-        # "pizzas": Pizza.objects.all(),
-        # "subs": Sub.objects.all(),
-        # "salads": Pasta.objects.all(),
-        # "dinners": Salad.objects.all()
+        'user_cart': user_cart,
+        'user_id': ShoppingCart.objects.get(user_id=request.user.id).user_id
     }
     return render(request, "mycart.html", context)
-
-
