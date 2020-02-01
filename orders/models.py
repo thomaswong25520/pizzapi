@@ -34,9 +34,9 @@ class Pizza(models.Model):
     def __str__(self):
         return f"Size: {self.get_pizza_size_display()}, Type: {self.pizza_type}, Number of Toppings: {self.qty_toppings},  Price: {self.price}, Toppings: {self.toppings.in_bulk()}"
     
-    # def save(self, *args, **kwargs):
-    #     super(Pizza, self).save(*args, **kwargs)
-    #     self.toppings.add(Topping.objects.get(name='Cheese'))
+    def save(self, *args, **kwargs):
+        super(Pizza, self).save(*args, **kwargs)
+        self.toppings.add(Topping.objects.get(name='Cheese'))
 
     
 class Extra(models.Model):

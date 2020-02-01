@@ -25,6 +25,7 @@ def signup(request):
 def menu(request):
     user_cart = get_object_or_404(ShoppingCart, user_id=request.user.id)
     if request.method == 'POST':
+        print(request.POST)
         messages.success(request, 'Item successfully added')
         return redirect('menu')
     else:
