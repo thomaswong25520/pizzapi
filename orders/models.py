@@ -108,9 +108,10 @@ class ShoppingCart(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     pizzas = models.ManyToManyField(Pizza, related_name='pizzas')
-    subs = models.ManyToManyField(Sub)
-    pastas = models.ManyToManyField(Pasta)
-    dinners = models.ManyToManyField(Dinner)
+    subs = models.ManyToManyField(Sub, related_name='subs')
+    pastas = models.ManyToManyField(Pasta, related_name='pastas')
+    salads = models.ManyToManyField(Salad, related_name='salads')
+    dinners = models.ManyToManyField(Dinner, related_name='dinners')
     
     number_of_articles = models.IntegerField(null=True)
     price = models.DecimalField(max_digits=5, decimal_places=2, null=True)
@@ -121,7 +122,10 @@ class ShoppingCart(models.Model):
             # f'total basket: {self.price}\n'
             # f'tot articles: {self.number_of_articles}\n'
             f'{self.pizzas.in_bulk()}\n'
-
+            f'{self.subs.in_bulk()}\n'
+            f'{self.pastas.in_bulk()}\n'
+            f'{self.salads.in_bulk()}\n'
+            f'{self.dinners.in_bulk()}\n'
         )
     
 
