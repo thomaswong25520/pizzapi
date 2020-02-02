@@ -17,7 +17,7 @@
     {% endif %}
 
     <h1> Welcome {{ user.username }}</h1>
-
+    <p><a href="{% url 'logout' %}">logout</a></p>
 
     <a href="/menu/mycart">View cart</a>
 

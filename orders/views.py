@@ -25,7 +25,11 @@ def signup(request):
     
 def menu(request):
     # user_cart = get_object_or_404(ShoppingCart, user_id=request.user.id)
-    user_cart = ShoppingCart.objects.get_or_create(user_id=request.user.id)[0]
+    user_cart, created = ShoppingCart.objects.get_or_create(user_id=request.user.id)
+    if created:
+        print(f'shoppingcart has been created, id is {user_cart.user_id}')
+    else:
+        print(f'shoppingcart already created!, id is {user_cart.user_id}')
     # print(user_cart)
     # print(type(user_cart))
     # print(user_cart[0])
@@ -61,12 +65,18 @@ def menu(request):
 
 def cart(request):
     # user_cart = get_object_or_404(ShoppingCart, user_id=request.user.id)
-    user_cart = ShoppingCart.objects.get_or_create(user_id=request.user.id)
+    user_cart = ShoppingCart.objects.get_or_create(user_id=request.user.id)[0]
     print(user_cart)
-    messages.success(request, 'Successfully in mycart.html')
-    context = {
-        'user_cart': user_cart,
-        'user_id': ShoppingCart.objects.get(user_id=request.user.id).user_id,
-        'items': ShoppingCart.objects.filter(user_id=request.user.id).all(),
-    }
-    return render(request, "mycart.html", context)
+    # messages.success(request, 'Successfully in mycart.html')
+    if request.POST:
+        if "del-cart" in request.POST:
+            user_cart.delete()
+            messages.success(request, 'ShoppingCart successfully emptied')
+            return redirect('cart')
+    else:
+        context = {
+            'user_cart': user_cart,
+            'user_id': ShoppingCart.objects.get(user_id=request.user.id).user_id,
+            'items': ShoppingCart.objects.filter(user_id=request.user.id).all(),
+        }
+        return render(request, "mycart.html", context)
