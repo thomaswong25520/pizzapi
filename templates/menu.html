@@ -44,21 +44,25 @@
     </ul>
 
     <h2> Pizzas </h2>
+
     <ul>
       {% for pizza in pizzas %}
 	<li>
-	  {{ pizza }}
 	  <form method="post" action="{% url 'menu' %}">
 	    {% csrf_token %}
-	    <p>{% pizza.name %}</p>
-	    <p>{% pizza.price %}</p>
-	    Qty:
-	    <input type="number" min="1" max="5">
-	    <button type="submit" name="pizza-btn">Add Item</button>
+	    <label name="{{ pizza.price }}">Price: {{ pizza.price }}$ </label>
+	    <p>Size: {{ pizza.pizza_size }}; Type: {{ pizza.pizza_type  }}</p>
+
+
+	    <button type="submit" name='pizza' value={{ pizza.id }}>Add item to basket</button>
+	    <!-- <input type="number" name="pizza-qty" min="1" max="5"> -->
 	  </form>
-	</li>
       {% endfor %}
+	</li>
+
     </ul>
+
+
 
     <h2> Subs </h2>
     <ul>
@@ -67,9 +71,7 @@
 	  {{ sub }}
 	  <form method="post" action="{% url 'menu' %}">
 	    {% csrf_token %}
-	    Qty:
-	    <input type="number" min="1" max="5">
-	    <button type="submit">Add Item</button>
+	    <button type="submit" name='sub'>Add item to basket</button>
 	  </form>
 
 	</li>

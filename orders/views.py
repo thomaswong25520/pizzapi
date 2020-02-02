@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
+
 from django.contrib import messages
 
 from .models import Topping, Pizza, Sub, Pasta, Salad, Dinner, User, ShoppingCart
@@ -23,9 +24,27 @@ def signup(request):
             
     
 def menu(request):
-    user_cart = get_object_or_404(ShoppingCart, user_id=request.user.id)
+    # user_cart = get_object_or_404(ShoppingCart, user_id=request.user.id)
+    user_cart = ShoppingCart.objects.get_or_create(user_id=request.user.id)[0]
+    # print(user_cart)
+    # print(type(user_cart))
+    # print(user_cart[0])
+    # print(user_cart[1])
     if request.method == 'POST':
+        # p_id = list(request.POST.keys())[-1]
+        # pizza_to_add = get_object_or_404(Pizza, id=p_id)
+
+        # print(type(pizza_to_add))
         print(request.POST)
+        if 'pizza' in request.POST:
+            print('pizza in here')
+            pizza_to_add = Pizza.objects.get(id=request.POST['pizza'])
+            user_cart.pizzas.add(pizza_to_add)
+        if 'sub' in request.POST:
+            print('sub in here')
+            
+        # user_cart.number_of_articles = user_cart.number_of_articles + 1
+        # user_cart.price += pizza_to_add.price
         messages.success(request, 'Item successfully added')
         return redirect('menu')
     else:
@@ -40,25 +59,14 @@ def menu(request):
         return render(request, "menu.html", context)
 
 
-# def cart(request, id=None):
-#     user_cart = get_object_or_404(ShoppingCart, id=id)
-#     messages.success(request, 'Successfully in mycart.html')
-#     context = {
-#         'user_cart': user_cart
-#         "toppings": Topping.objects.all(),
-#         "pizzas": Pizza.objects.all(),
-#         "subs": Sub.objects.all(),
-#         "salads": Pasta.objects.all(),
-#         "dinners": Salad.objects.all()
-#     }
-#     return render(request, "mycart.html", context)
-
-
 def cart(request):
-    user_cart = get_object_or_404(ShoppingCart, user_id=request.user.id)
+    # user_cart = get_object_or_404(ShoppingCart, user_id=request.user.id)
+    user_cart = ShoppingCart.objects.get_or_create(user_id=request.user.id)
+    print(user_cart)
     messages.success(request, 'Successfully in mycart.html')
     context = {
         'user_cart': user_cart,
-        'user_id': ShoppingCart.objects.get(user_id=request.user.id).user_id
+        'user_id': ShoppingCart.objects.get(user_id=request.user.id).user_id,
+        'items': ShoppingCart.objects.filter(user_id=request.user.id).all(),
     }
     return render(request, "mycart.html", context)

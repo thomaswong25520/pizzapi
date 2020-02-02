@@ -107,7 +107,7 @@ class Euser(models.Model):
 class ShoppingCart(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
-    pizzas = models.ManyToManyField(Pizza)
+    pizzas = models.ManyToManyField(Pizza, related_name='pizzas')
     subs = models.ManyToManyField(Sub)
     pastas = models.ManyToManyField(Pasta)
     dinners = models.ManyToManyField(Dinner)
@@ -116,7 +116,14 @@ class ShoppingCart(models.Model):
     price = models.DecimalField(max_digits=5, decimal_places=2, null=True)
 
     def __str__(self):
-        return(f"{self.user}'s cart")
+        return(
+            # f'{self.user}\'s cart\n'
+            # f'total basket: {self.price}\n'
+            # f'tot articles: {self.number_of_articles}\n'
+            f'{self.pizzas.in_bulk()}\n'
+
+        )
+    
 
 @receiver(post_save, sender=get_user_model())
 def create_user_cart(sender, instance, created, **kwargs):
