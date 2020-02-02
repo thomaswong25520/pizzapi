@@ -67,16 +67,24 @@ def cart(request):
     # user_cart = get_object_or_404(ShoppingCart, user_id=request.user.id)
     user_cart = ShoppingCart.objects.get_or_create(user_id=request.user.id)[0]
     print(user_cart)
+    # print("HERE")
     # messages.success(request, 'Successfully in mycart.html')
     if request.POST:
         if "del-cart" in request.POST:
             user_cart.delete()
             messages.success(request, 'ShoppingCart successfully emptied')
             return redirect('cart')
+        if "del-pizza" in request.POST:
+            print(request.POST['del-pizza'])
+            user_cart.pizzas.remove(user_cart.pizzas.get(id=request.POST['del-pizza']))
+            messages.success(request, 'Pizza successfully removed from ShoppingCart')
+            return redirect('cart')
+        
     else:
         context = {
             'user_cart': user_cart,
             'user_id': ShoppingCart.objects.get(user_id=request.user.id).user_id,
             'items': ShoppingCart.objects.filter(user_id=request.user.id).all(),
+            'pizzas' : user_cart.pizzas.values(),
         }
         return render(request, "mycart.html", context)
