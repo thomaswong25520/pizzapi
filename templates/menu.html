@@ -23,77 +23,20 @@
 
     <h1> Menu </h1>
 
-    <h2> Toppings </h2>
     <ul>
-      {% for topping in toppings %}
-	<li>
-	  {{ topping }}
-	  <form method="post" action="{% url 'menu' %}">
-	    {% csrf_token %}
-	    Qty:
-	    <input type="number" min="1" max="5">
-	    <button type="submit">Add Item</button>
-	  </form>
 
-	</li>
-      {% endfor %}
-    </ul>
-
-    <h2> Pizzas </h2>
-
-    <ul>
-      {% for pizza in pizzas %}
-	<li>
-	  <form method="post" action="{% url 'menu' %}">
-	    {% csrf_token %}
-	    <label name="{{ pizza.price }}">Price: {{ pizza.price }}$ </label>
-	    <p>Size: {{ pizza.pizza_size }}; Type: {{ pizza.pizza_type  }}</p>
-
-
-	    <button type="submit" name='pizza' value={{ pizza.id }}>Add item to basket</button>
-	    <!-- <input type="number" name="pizza-qty" min="1" max="5"> -->
-	  </form>
-      {% endfor %}
-	</li>
-
-    </ul>
-
-    <h2> Subs </h2>
-
-    <ul>
-      {% for sub in subs %}
-	<li>
-	  <form method="post" action="{% url 'menu' %}">
-	    {% csrf_token %}
-	    <p>{{ sub.name }}, {{ sub.get_subs_size_display }}  .....  {{ sub.price }}$
-	      <button type="submit" name='sub' value={{ sub.id }}>Add item to basket</button>
-	    </p>
-	  </form>
-      {% endfor %}
-	</li>
-
-    </ul>
-
-    {% comment  %}
-
-
-      <h2> Pizzas </h2>
-
+      <h2> Toppings </h2>
+      
       <ul>
-	{% for pizza in pizzas %}
+	{% for topping in toppings %}
+
 	  <li>
 	    <form method="post" action="{% url 'menu' %}">
 	      {% csrf_token %}
-	      <label name="{{ pizza.price }}">Price: {{ pizza.price }}$ </label>
-	      <p>Size: {{ pizza.pizza_size }}; Type: {{ pizza.pizza_type  }}</p>
-
-
-	      <button type="submit" name='pizza' value={{ pizza.id }}>Add item to basket</button>
-	      <!-- <input type="number" name="pizza-qty" min="1" max="5"> -->
+	      <p>{{ topping.name }}</p>
 	    </form>
-	{% endfor %}
 	  </li>
-
+	{% endfor %}
       </ul>
 
       <h2> Pizzas </h2>
@@ -103,43 +46,76 @@
 	  <li>
 	    <form method="post" action="{% url 'menu' %}">
 	      {% csrf_token %}
-	      <label name="{{ pizza.price }}">Price: {{ pizza.price }}$ </label>
-	      <p>Size: {{ pizza.pizza_size }}; Type: {{ pizza.pizza_type  }}</p>
-
-
-	      <button type="submit" name='pizza' value={{ pizza.id }}>Add item to basket</button>
-	      <!-- <input type="number" name="pizza-qty" min="1" max="5"> -->
+	      <p>{{ pizza.pizza_type }}, Size: {{ pizza.pizza_size }}  .....  {{ pizza.price }}$
+		<button type="submit" name='pizza' value={{ pizza.id }}>Add item to basket</button>
+	      </p>
 	    </form>
-	{% endfor %}
 	  </li>
-
+	{% endfor %}
       </ul>
 
-      <h2> Pizzas </h2>
+      <h2> Subs </h2>
 
       <ul>
-	{% for pizza in pizzas %}
+	{% for sub in subs %}
 	  <li>
 	    <form method="post" action="{% url 'menu' %}">
 	      {% csrf_token %}
-	      <label name="{{ pizza.price }}">Price: {{ pizza.price }}$ </label>
-	      <p>Size: {{ pizza.pizza_size }}; Type: {{ pizza.pizza_type  }}</p>
-
-
-	      <button type="submit" name='pizza' value={{ pizza.id }}>Add item to basket</button>
-	      <!-- <input type="number" name="pizza-qty" min="1" max="5"> -->
+	      <p>{{ sub.name }}, {{ sub.get_subs_size_display }}  .....  {{ sub.price }}$
+		<button type="submit" name='sub' value={{ sub.id }}>Add item to basket</button>
+	      </p>
 	    </form>
-	{% endfor %}
 	  </li>
+	{% endfor %}
+      </ul>
+
+      <h2> Pastas </h2>
+
+      <ul>
+	{% for pasta in pastas %}
+	  <li>
+	    <form method="post" action="{% url 'menu' %}">
+	      {% csrf_token %}
+	      <p>{{ pasta.name }}  .....  {{ pasta.price }}$
+		<button type="submit" name='pasta' value={{ pasta.id }}>Add item to basket</button>
+	      </p>
+	    </form>
+	  </li>
+	{% endfor %}
+      </ul>
+
+      <h2> Salads </h2>
+
+      <ul>
+	{% for salad in salads %}
+	  <li>
+	    <form method="post" action="{% url 'menu' %}">
+	      {% csrf_token %}
+	      <p>{{ salad.name }}  .....  {{ salad.price }}$
+		<button type="submit" name='salad' value={{ salad.id }}>Add item to basket</button>
+	      </p>
+	    </form>
+	  </li>
+	{% endfor %}
 
       </ul>
 
+      <h2> Dinners </h2>
 
+      <ul>
+	{% for dinner in dinners %}
+	  <li>
+	    <form method="post" action="{% url 'menu' %}">
+	      {% csrf_token %}
+	      <p>{{ dinner.name }}, {{ dinner.get_subs_size_display }}  .....  {{ dinner.price }}$
+		<button type="submit" name='dinner' value={{ dinner.id }}>Add item to basket</button>
+	      </p>
+	    </form>
+	  </li>
+	{% endfor %}
+      </ul>
 
-
-
-    {% endcomment %}
-
+    </ul>
 
   {% else %}
     <p>You are not logged in ! You should not be able to see this</p>
