@@ -3,7 +3,7 @@ from django.contrib.admin import ModelAdmin
 
 from import_export.admin import ImportExportModelAdmin
 
-from .models import Topping, Pizza, Sub, Pasta, Salad, Dinner, Extra, Item, Order
+from .models import Topping, Pizza, Sub, Pasta, Salad, Dinner, Extra, Item, Order, ShoppingCart
 
 
 class PizzaAdmin(ImportExportModelAdmin):
@@ -37,6 +37,7 @@ admin.site.register(Pizza, PizzaAdmin)
 admin.site.register(Extra)
 admin.site.register(Item)
 admin.site.register(Order)
+admin.site.register(ShoppingCart)
 admin.site.register(Pasta, PastaAdmin)
 admin.site.register(Salad, SaladAdmin)
 admin.site.register(Dinner, DinnerAdmin)
