@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -225,20 +227,32 @@ def cart(request):
 
 
 def confirm(request):
-    user_cart = ShoppingCart.objects.get_or_create(user_id=request.user.id)[0]
-    # user_cart.pk = None
-    # user_cart.save()
-    # context = {
-    #         'user_cart': user_cart,
-    #         'user_id': ShoppingCart.objects.get(user_id=request.user.id).user_id,
-    #         'items': ShoppingCart.objects.filter(user_id=request.user.id).all(),
-    #         'pizzas' : user_cart.pizzas.all(),
-    #         'subs' : user_cart.subs.values(),
-    #         'pastas' : user_cart.pastas.values(),
-    #         'salads' : user_cart.salads.values(),
-    #         'dinners' : user_cart.dinners.values(),
-    # }
+    if request.POST:
+        user_cart = ShoppingCart.objects.get_or_create(user_id=request.user.id)[0]
+        # user_cart.pk = None
+        # user_cart.save()
+        
+        # user_cart_old = ShoppingCart.objects.get_or_create(user_id=request.user.id)[0]        
+        # user_cart_old.delete()
+        
+        order = Order.objects.create(date_order=datetime.now(), cart=user_cart)
+
+        messages.success(request, 'Order confirmed!')
+        
+        context = {
+            'user_cart': user_cart,
+            'order': order,
+            'pizzas' : user_cart.pizzas.all(),
+            'subs' : user_cart.subs.all(),
+            'pastas' : user_cart.pastas.all(),
+            'salads' : user_cart.salads.all(),
+            'dinners' : user_cart.dinners.all(),
+        }
+        
     return render(request, "confirmation.html", context)
+
+
+
 
 
 
