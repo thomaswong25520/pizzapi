@@ -38,53 +38,27 @@ def menu(request):
             item = Item.objects.create(piz=p)
             user_cart.pizzas.add(item)
             user_cart.price += item.piz.price
-
-
         if 'sub' in request.POST:
             p = Sub.objects.get(id=request.POST['sub'])
             item = Item.objects.create(sub=p)
             user_cart.subs.add(item)
             user_cart.price += item.sub.price
-
         if 'pasta' in request.POST:
             p = Pasta.objects.get(id=request.POST['pasta'])
             item = Item.objects.create(past=p)
             user_cart.pastas.add(item)
             user_cart.price += item.past.price
-
         if 'salad' in request.POST:
             p = Salad.objects.get(id=request.POST['salad'])
             item = Item.objects.create(sal=p)
             user_cart.salads.add(item)
             user_cart.price += item.sal.price
-            
-            
         if 'dinner' in request.POST:
             p = Dinner.objects.get(id=request.POST['dinner'])
             item = Item.objects.create(din=p)
             user_cart.dinners.add(item)
             user_cart.price += item.din.price
-
-
-
             
-        # if 'sub' in request.POST:
-        #     sub_to_add = Sub.objects.get(id=request.POST['sub'])
-        #     user_cart.subs.add(sub_to_add)
-        #     user_cart.price += sub_to_add.price
-        # if 'pasta' in request.POST:
-        #     pasta_to_add = Pasta.objects.get(id=request.POST['pasta'])
-        #     user_cart.pastas.add(pasta_to_add)
-        #     user_cart.price += pasta_to_add.price
-        # if 'salad' in request.POST:
-        #     salad_to_add = Salad.objects.get(id=request.POST['salad'])
-        #     user_cart.salads.add(salad_to_add)
-        #     user_cart.price += salad_to_add.price
-        # if 'dinner' in request.POST:
-        #     dinner_to_add = Dinner.objects.get(id=request.POST['dinner'])
-        #     user_cart.dinners.add(dinner_to_add)
-        #     user_cart.price += dinner_to_add.price
-
         user_cart.number_of_articles += 1
         user_cart.save()
         messages.success(request, 'Item successfully added')
@@ -171,47 +145,6 @@ def cart(request):
             Item.objects.get(id=request.POST['del-dinner']).delete()
             messages.success(request, 'Dinner successfully removed from ShoppingCart')
             return redirect('cart')
-
-
-
-
-        
-        # if "del-sub" in request.POST:
-        #     print(request.POST['del-sub'])
-        #     user_cart.number_of_articles -= 1
-        #     user_cart.price -= user_cart.subs.get(id=request.POST['del-sub']).price
-        #     user_cart.subs.remove(user_cart.subs.get(id=request.POST['del-sub']))
-        #     user_cart.save()
-        #     messages.success(request, 'Sub successfully removed from ShoppingCart')
-        #     return redirect('cart')
-
-        # if "del-pasta" in request.POST:
-        #     print(request.POST['del-pasta'])
-        #     user_cart.number_of_articles -= 1
-        #     user_cart.price -= user_cart.pastas.get(id=request.POST['del-pasta']).price
-        #     user_cart.pastas.remove(user_cart.pastas.get(id=request.POST['del-pasta']))
-        #     user_cart.save()
-        #     messages.success(request, 'Pasta successfully removed from ShoppingCart')
-        #     return redirect('cart')
-
-        # if "del-salad" in request.POST:
-        #     print(request.POST['del-salad'])
-        #     user_cart.number_of_articles -= 1
-        #     user_cart.price -= user_cart.salads.get(id=request.POST['del-salad']).price
-        #     user_cart.salads.remove(user_cart.salads.get(id=request.POST['del-salad']))
-        #     user_cart.save()
-        #     messages.success(request, 'Salad successfully removed from ShoppingCart')
-        #     return redirect('cart')
-
-        # if "del-dinner" in request.POST:
-        #     print(request.POST['del-dinner'])
-        #     user_cart.number_of_articles -= 1
-        #     user_cart.price -= user_cart.dinners.get(id=request.POST['del-dinner']).price
-        #     user_cart.dinners.remove(user_cart.dinners.get(id=request.POST['del-dinner']))
-        #     user_cart.save()
-        #     messages.success(request, 'Dinner successfully removed from ShoppingCart')
-        #     return redirect('cart')
-
     else:
         context = {
             'user_cart': user_cart,
@@ -235,7 +168,7 @@ def confirm(request):
         # user_cart_old = ShoppingCart.objects.get_or_create(user_id=request.user.id)[0]        
         # user_cart_old.delete()
         
-        order = Order.objects.create(date_order=datetime.now(), cart=user_cart)
+        order = Order.objects.create(user_id=request.user.id, date_order=datetime.now(), cart=user_cart)
 
         messages.success(request, 'Order confirmed!')
         
@@ -252,10 +185,5 @@ def confirm(request):
     return render(request, "confirmation.html", context)
 
 
-
-
-
-
-
-
-            
+# def orderDetails(request):
+    

@@ -113,7 +113,7 @@ class Item(models.Model):
     
 class ShoppingCart(models.Model):
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     pizzas = models.ManyToManyField(Item, related_name='pizzas')
     subs = models.ManyToManyField(Item, related_name='subs')
     pastas = models.ManyToManyField(Item, related_name='pastas')
@@ -138,6 +138,7 @@ class ShoppingCart(models.Model):
 
 class Order(models.Model):
 
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     date_order = models.DateField()
     cart = models.ForeignKey(ShoppingCart,on_delete=models.CASCADE,default=None, null=False)
 
