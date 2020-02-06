@@ -87,6 +87,8 @@ def orders(request):
 def details(request):
     order_id = request.POST['o_id']
     order = Order.objects.get(pk=order_id)
+
+    # Pizzas
     pizzas = order.cart.pizzas.values() #dict
     l = []
     lp = []
@@ -94,13 +96,54 @@ def details(request):
         l.append(i['piz_id']) #Retrieve ID of pizza items in cart
     for i in l:
         lp.append(Pizza.objects.get(id=i))
+
+    # Subs
+    subs = order.cart.subs.values() #dict
+    l1 = []
+    ls = []
+    for i in subs:
+        l1.append(i['sub_id']) #Retrieve ID of subs items in cart
+    for i in l1:
+        ls.append(Sub.objects.get(id=i))
+
+
+    # Pastas
+    pastas = order.cart.pastas.values() #dict
+    l2 = []
+    lpa = []
+    for i in pastas:
+        l2.append(i['past_id']) #Retrieve ID of pasta items in cart
+    for i in l2:
+        lpa.append(Pasta.objects.get(id=i))
+
+        
+    # Salads
+    salads = order.cart.salads.values() #dict
+    l3 = []
+    lsa = []
+    for i in salads:
+        l3.append(i['sal_id']) #Retrieve ID of salad items in cart
+    for i in l3:
+        lsa.append(Salad.objects.get(id=i))
+
+        
+    # Dinners
+    dinners = order.cart.dinners.values() #dict
+    l4 = []
+    ld = []
+    for i in dinners:
+        l4.append(i['din_id']) #Retrieve ID of pasta items in cart
+    for i in l4:
+        ld.append(Dinner.objects.get(id=i))
+
+        
     context = {
         "order": order,
         "pizzas": lp,
-        # "subs": 
-        # "pastas": 
-        # "salads": 
-        # "dinners": 
+        "subs": ls,
+        "pastas": lpa,
+        "salads": lsa,
+        "dinners": ld,
     }
     return render(request, "details.html", context)
             
