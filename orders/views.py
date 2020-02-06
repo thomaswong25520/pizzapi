@@ -70,9 +70,40 @@ def menu(request):
             "subs": Sub.objects.all(),
             "pastas": Pasta.objects.all(),
             "salads": Salad.objects.all(),
-            "dinners": Dinner.objects.all()
+            "dinners": Dinner.objects.all(),
+
         }
         return render(request, "menu.html", context)
+
+def orders(request):
+    user_order = Order.objects.filter(user_id=request.user.id).all()
+    messages.success(request, 'Successfully in orders page')
+    context = {
+        "orders": user_order,
+    }
+    return render(request, "orders.html", context)
+
+
+def details(request):
+    order_id = request.POST['o_id']
+    order = Order.objects.get(pk=order_id)
+    pizzas = order.cart.pizzas.values() #dict
+    l = []
+    lp = []
+    for i in pizzas:
+        l.append(i['piz_id']) #Retrieve ID of pizza items in cart
+    for i in l:
+        lp.append(Pizza.objects.get(id=i))
+    context = {
+        "order": order,
+        "pizzas": lp,
+        # "subs": 
+        # "pastas": 
+        # "salads": 
+        # "dinners": 
+    }
+    return render(request, "details.html", context)
+            
 
 
 def cart(request):
