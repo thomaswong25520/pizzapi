@@ -138,11 +138,28 @@ class ShoppingCart(models.Model):
 
 class Order(models.Model):
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     date_order = models.DateField()
-    cart = models.ForeignKey(ShoppingCart,on_delete=models.CASCADE,default=None, null=False)
+    cart = models.ManyToManyField(ShoppingCart, default=None, null=False)
+
+    qty = models.IntegerField(default=0)
+    tot = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    
 
 
+class OrderItem(models.Model):
+
+    order_fk = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
+    order_id = models.IntegerField(default=0)
+    # item = models.ManyToManyField(Item, default=None)
+    pizzas = models.ManyToManyField(Pizza, related_name='Orderpizzas')
+    subs = models.ManyToManyField(Sub, related_name='o_subs')
+    pastas = models.ManyToManyField(Pasta, related_name='o_pastas')
+    salads = models.ManyToManyField(Salad, related_name='o_salads')
+    dinners = models.ManyToManyField(Dinner, related_name='o_dinners')
+    
+    
+    
     
 @receiver(post_save, sender=get_user_model())
 def create_user_cart(sender, instance, created, **kwargs):

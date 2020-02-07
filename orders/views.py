@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from django.contrib import messages
 
-from .models import Topping, Pizza, Sub, Pasta, Salad, Dinner, User, ShoppingCart, Item, Order
+from .models import Topping, Pizza, Sub, Pasta, Salad, Dinner, User, ShoppingCart, Item, Order, OrderItem
 from .forms import SignUp
 
 
@@ -84,69 +84,8 @@ def orders(request):
     return render(request, "orders.html", context)
 
 
-def details(request):
-    order_id = request.POST['o_id']
-    order = Order.objects.get(pk=order_id)
 
-    # Pizzas
-    pizzas = order.cart.pizzas.values() #dict
-    l = []
-    lp = []
-    for i in pizzas:
-        l.append(i['piz_id']) #Retrieve ID of pizza items in cart
-    for i in l:
-        lp.append(Pizza.objects.get(id=i))
-
-    # Subs
-    subs = order.cart.subs.values() #dict
-    l1 = []
-    ls = []
-    for i in subs:
-        l1.append(i['sub_id']) #Retrieve ID of subs items in cart
-    for i in l1:
-        ls.append(Sub.objects.get(id=i))
-
-
-    # Pastas
-    pastas = order.cart.pastas.values() #dict
-    l2 = []
-    lpa = []
-    for i in pastas:
-        l2.append(i['past_id']) #Retrieve ID of pasta items in cart
-    for i in l2:
-        lpa.append(Pasta.objects.get(id=i))
-
-        
-    # Salads
-    salads = order.cart.salads.values() #dict
-    l3 = []
-    lsa = []
-    for i in salads:
-        l3.append(i['sal_id']) #Retrieve ID of salad items in cart
-    for i in l3:
-        lsa.append(Salad.objects.get(id=i))
-
-        
-    # Dinners
-    dinners = order.cart.dinners.values() #dict
-    l4 = []
-    ld = []
-    for i in dinners:
-        l4.append(i['din_id']) #Retrieve ID of pasta items in cart
-    for i in l4:
-        ld.append(Dinner.objects.get(id=i))
-
-        
-    context = {
-        "order": order,
-        "pizzas": lp,
-        "subs": ls,
-        "pastas": lpa,
-        "salads": lsa,
-        "dinners": ld,
-    }
-    return render(request, "details.html", context)
-            
+# def details(request):
 
 
 def cart(request):
@@ -236,20 +175,48 @@ def cart(request):
 def confirm(request):
     if request.POST:
         user_cart = ShoppingCart.objects.get_or_create(user_id=request.user.id)[0]
+        order = Order.objects.create(user_id=request.user.id, date_order=datetime.now(), qty=user_cart.number_of_articles, tot=user_cart.price)
+        # order = Order.objects.create()
+        # Pizza.objects.get(id=s2.pizzas.values()[0]['piz_id'])
+
+        for pizza_item in user_cart.pizzas.values():
+            order_piz = OrderItem.objects.create(order_id=order.pk)
+            order_piz.pizzas.add(Pizza.objects.get(id=pizza_item['piz_id']))
+
+        # for sub_item in user_cart.subs.values():
+        #     order_sub = OrderItem.objects.create()
+        #     order_sub.item.add(order_sub)
+
+        # for pasta_item in user_cart.pastas.values():
+        #     order_pas = OrderItem.objects.create()
+        #     order_pas.item.add(order_pas)
+
+        # for salad_item in user_cart.salads.values():
+        #     order_sal = OrderItem.objects.create()
+        #     order_sal.item.add(order_sal)
+
+        # for dinner_item in user_cart.dinners.values():
+        #     order_din = OrderItem.objects.create()
+        #     order_din.item.add(order_din)
+
+            
+            
         # user_cart.pk = None
         # user_cart.save()
         
-        # user_cart_old = ShoppingCart.objects.get_or_create(user_id=request.user.id)[0]        
+        # user_cart_old = ShoppingCart.objects.get_or_create(user_id=request.user.id, pk=request.POST['old_cart'])[0]
         # user_cart_old.delete()
         
-        order = Order.objects.create(user_id=request.user.id, date_order=datetime.now(), cart=user_cart)
+
+        # order.cart.add(user_cart)
+
 
         messages.success(request, 'Order confirmed!')
         
         context = {
             'user_cart': user_cart,
             'order': order,
-            'pizzas' : user_cart.pizzas.all(),
+            'pizzas' : order_piz.pizzas.all(),
             'subs' : user_cart.subs.all(),
             'pastas' : user_cart.pastas.all(),
             'salads' : user_cart.salads.all(),
@@ -259,5 +226,77 @@ def confirm(request):
     return render(request, "confirmation.html", context)
 
 
+def details(request):
+    if request.POST:
+        order_id = request.POST['o_id']
+        order = Order.objects.get(pk=order_id)
+        
+        # pizzas = order.cart.pizzas.values()
+        qs_pizza = []
+        lid_pizza = []
+        pizzas = []
+        orderitem_qs = OrderItem.objects.filter(order_id=order_id).all()
+        for orderitem in orderitem_qs:
+            qs_pizza.append(orderitem.pizzas.values()[0])
+        for i in qs_pizza:
+            lid_pizza.append(i['id'])
+        for i in lid_pizza:
+            pizzas.append(Pizza.objects.get(id=i))
+
+
+        context = {
+            "order": order,
+            "total": order.tot,
+            "qty": order.qty,
+            "pizzas": pizzas,
+            # "subs": ls,
+            # "pastas": lpa,
+            # "salads": lsa,
+            # "dinners": ld,
+        }
+        return render(request, "details.html", context)
+#     l = []
+#     lp = []
+
+#     subs = order.cart.subs.values()
+#     l1 = []
+#     ls = []
+#     for i in subs:
+#         l1.append(i['sub_id']) 
+#     for i in l1:
+#         ls.append(Sub.objects.get(id=i))
+
+#     pastas = order.cart.pastas.values()
+#     l2 = []
+#     lpa = []
+#     for i in pastas:
+#         l2.append(i['past_id'])
+#     for i in l2:
+#         lpa.append(Pasta.objects.get(id=i))
+        
+#     salads = order.cart.salads.values()
+#     l3 = []
+#     lsa = []
+#     for i in salads:
+#         l3.append(i['sal_id']) 
+#     for i in l3:
+#         lsa.append(Salad.objects.get(id=i))
+
+#     dinners = order.cart.dinners.values() 
+#     l4 = []
+#     ld = []
+#     for i in dinners:
+#         l4.append(i['din_id']) 
+#     for i in l4:
+#         ld.append(Dinner.objects.get(id=i))
+
+        
+
+            
+
+
+
+
 # def orderDetails(request):
     
+
