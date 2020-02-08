@@ -26,7 +26,6 @@ def signup(request):
             
     
 def menu(request):
-    # user_cart = get_object_or_404(ShoppingCart, user_id=request.user.id)
     user_cart, created = ShoppingCart.objects.get_or_create(user_id=request.user.id)
     if created:
         print(f'shoppingcart has been created, id is {user_cart.user_id}')
@@ -84,16 +83,8 @@ def orders(request):
     return render(request, "orders.html", context)
 
 
-
-# def details(request):
-
-
 def cart(request):
-    # user_cart = get_object_or_404(ShoppingCart, user_id=request.user.id)
     user_cart = ShoppingCart.objects.get_or_create(user_id=request.user.id)[0]
-    print(user_cart)
-    # print("HERE")
-    # messages.success(request, 'Successfully in mycart.html')
     if request.POST:
         if "del-cart" in request.POST:
             user_cart.pizzas.all().delete()
@@ -176,127 +167,125 @@ def confirm(request):
     if request.POST:
         user_cart = ShoppingCart.objects.get_or_create(user_id=request.user.id)[0]
         order = Order.objects.create(user_id=request.user.id, date_order=datetime.now(), qty=user_cart.number_of_articles, tot=user_cart.price)
-        # order = Order.objects.create()
-        # Pizza.objects.get(id=s2.pizzas.values()[0]['piz_id'])
 
-        for pizza_item in user_cart.pizzas.values():
-            order_piz = OrderItem.objects.create(order_id=order.pk)
-            order_piz.pizzas.add(Pizza.objects.get(id=pizza_item['piz_id']))
+        for piz_item in user_cart.pizzas.values():
+            order_pizza = OrderItem.objects.create(order_id=order.pk)
+            order_pizza.pizzas.add(Pizza.objects.get(id=piz_item['piz_id']))
 
-        # for sub_item in user_cart.subs.values():
-        #     order_sub = OrderItem.objects.create()
-        #     order_sub.item.add(order_sub)
+        for sub_item in user_cart.subs.values():
+            order_sub = OrderItem.objects.create(order_id=order.pk)
+            order_sub.subs.add(Sub.objects.get(id=sub_item['sub_id']))
 
-        # for pasta_item in user_cart.pastas.values():
-        #     order_pas = OrderItem.objects.create()
-        #     order_pas.item.add(order_pas)
+        for pasta_item in user_cart.pastas.values():
+            order_pas = OrderItem.objects.create(order_id=order.pk)
+            order_pas.pastas.add(Pasta.objects.get(id=pasta_item['past_id']))
 
-        # for salad_item in user_cart.salads.values():
-        #     order_sal = OrderItem.objects.create()
-        #     order_sal.item.add(order_sal)
+        for salad_item in user_cart.salads.values():
+            order_sal = OrderItem.objects.create(order_id=order.pk)
+            order_sal.salads.add(Salad.objects.get(id=salad_item['sal_id']))
 
-        # for dinner_item in user_cart.dinners.values():
-        #     order_din = OrderItem.objects.create()
-        #     order_din.item.add(order_din)
-
+        for dinner_item in user_cart.dinners.values():
+            order_din = OrderItem.objects.create(order_id=order.pk)
+            order_din.dinners.add(Dinner.objects.get(id=dinner_item['din_id']))
             
-            
-        # user_cart.pk = None
-        # user_cart.save()
-        
-        # user_cart_old = ShoppingCart.objects.get_or_create(user_id=request.user.id, pk=request.POST['old_cart'])[0]
-        # user_cart_old.delete()
-        
+        orderitem_qs = OrderItem.objects.filter(order_id=order.id).all()
 
-        # order.cart.add(user_cart)
-
-
-        messages.success(request, 'Order confirmed!')
-        
-        context = {
-            'user_cart': user_cart,
-            'order': order,
-            'pizzas' : order_piz.pizzas.all(),
-            'subs' : user_cart.subs.all(),
-            'pastas' : user_cart.pastas.all(),
-            'salads' : user_cart.salads.all(),
-            'dinners' : user_cart.dinners.all(),
-        }
-        
-    return render(request, "confirmation.html", context)
-
-
-def details(request):
-    if request.POST:
-        order_id = request.POST['o_id']
-        order = Order.objects.get(pk=order_id)
-        
-        # pizzas = order.cart.pizzas.values()
-        qs_pizza = []
-        lid_pizza = []
         pizzas = []
-        orderitem_qs = OrderItem.objects.filter(order_id=order_id).all()
+        subs = []
+        pastas = []
+        salads = []
+        dinners = []
         for orderitem in orderitem_qs:
-            qs_pizza.append(orderitem.pizzas.values()[0])
-        for i in qs_pizza:
-            lid_pizza.append(i['id'])
-        for i in lid_pizza:
-            pizzas.append(Pizza.objects.get(id=i))
+            if len(orderitem.pizzas.values()) != 0:
+                order_pizza = orderitem.pizzas.values()[0]
+                pizzas.append(Pizza.objects.get(id=order_pizza['id']))
+                continue
 
+            if len(orderitem.subs.values()) != 0:
+                order_sub = orderitem.subs.values()[0]
+                subs.append(Sub.objects.get(id=order_sub['id']))
+                continue
+
+            if len(orderitem.pastas.values()) != 0:
+                order_pasta = orderitem.pastas.values()[0]
+                pastas.append(Pasta.objects.get(id=order_pasta['id']))
+                continue
+
+            if len(orderitem.salads.values()) != 0:
+                order_salad = orderitem.salads.values()[0]
+                salads.append(Salad.objects.get(id=order_salad['id']))
+                continue
+            
+            if len(orderitem.dinners.values()) != 0:
+                order_dinner = orderitem.dinners.values()[0]
+                dinners.append(Dinner.objects.get(id=order_dinner['id']))
+                continue
+
+        user_cart.pizzas.all().delete()
+        user_cart.subs.all().delete()
+        user_cart.pastas.all().delete()
+        user_cart.salads.all().delete()
+        user_cart.dinners.all().delete()
+        user_cart.delete()
 
         context = {
             "order": order,
             "total": order.tot,
             "qty": order.qty,
             "pizzas": pizzas,
-            # "subs": ls,
-            # "pastas": lpa,
-            # "salads": lsa,
-            # "dinners": ld,
+            "subs": subs,
+            "pastas": pastas,
+            "salads": salads,
+            "dinners": dinners,
+        }
+        return render(request, "confirmation.html", context)
+        
+
+def details(request):
+    if request.POST:
+        order_id = request.POST['o_id']
+        order = Order.objects.get(pk=order_id)
+        orderitem_qs = OrderItem.objects.filter(order_id=order_id).all()
+
+        pizzas = []
+        subs = []
+        pastas = []
+        salads = []
+        dinners = []
+        for orderitem in orderitem_qs:
+            if len(orderitem.pizzas.values()) != 0:
+                order_pizza = orderitem.pizzas.values()[0]
+                pizzas.append(Pizza.objects.get(id=order_pizza['id']))
+                continue
+
+            if len(orderitem.subs.values()) != 0:
+                order_sub = orderitem.subs.values()[0]
+                subs.append(Sub.objects.get(id=order_sub['id']))
+                continue
+
+            if len(orderitem.pastas.values()) != 0:
+                order_pasta = orderitem.pastas.values()[0]
+                pastas.append(Pasta.objects.get(id=order_pasta['id']))
+                continue
+
+            if len(orderitem.salads.values()) != 0:
+                order_salad = orderitem.salads.values()[0]
+                salads.append(Salad.objects.get(id=order_salad['id']))
+                continue
+            
+            if len(orderitem.dinners.values()) != 0:
+                order_dinner = orderitem.dinners.values()[0]
+                dinners.append(Dinner.objects.get(id=order_dinner['id']))
+                continue
+            
+        context = {
+            "order": order,
+            "total": order.tot,
+            "qty": order.qty,
+            "pizzas": pizzas,
+            "subs": subs,
+            "pastas": pastas,
+            "salads": salads,
+            "dinners": dinners,
         }
         return render(request, "details.html", context)
-#     l = []
-#     lp = []
-
-#     subs = order.cart.subs.values()
-#     l1 = []
-#     ls = []
-#     for i in subs:
-#         l1.append(i['sub_id']) 
-#     for i in l1:
-#         ls.append(Sub.objects.get(id=i))
-
-#     pastas = order.cart.pastas.values()
-#     l2 = []
-#     lpa = []
-#     for i in pastas:
-#         l2.append(i['past_id'])
-#     for i in l2:
-#         lpa.append(Pasta.objects.get(id=i))
-        
-#     salads = order.cart.salads.values()
-#     l3 = []
-#     lsa = []
-#     for i in salads:
-#         l3.append(i['sal_id']) 
-#     for i in l3:
-#         lsa.append(Salad.objects.get(id=i))
-
-#     dinners = order.cart.dinners.values() 
-#     l4 = []
-#     ld = []
-#     for i in dinners:
-#         l4.append(i['din_id']) 
-#     for i in l4:
-#         ld.append(Dinner.objects.get(id=i))
-
-        
-
-            
-
-
-
-
-# def orderDetails(request):
-    
-

@@ -151,7 +151,6 @@ class OrderItem(models.Model):
 
     order_fk = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
     order_id = models.IntegerField(default=0)
-    # item = models.ManyToManyField(Item, default=None)
     pizzas = models.ManyToManyField(Pizza, related_name='Orderpizzas')
     subs = models.ManyToManyField(Sub, related_name='o_subs')
     pastas = models.ManyToManyField(Pasta, related_name='o_pastas')
