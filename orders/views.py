@@ -159,6 +159,8 @@ def cart(request):
             'pastas' : user_cart.pastas.all(),
             'salads' : user_cart.salads.all(),
             'dinners' : user_cart.dinners.all(),
+            'toppings' : Topping.objects.all()[1:],
+            'cheese' : Topping.objects.get(name='Cheese'),
         }
         return render(request, "mycart.html", context)
 
@@ -168,6 +170,8 @@ def confirm(request):
         user_cart = ShoppingCart.objects.get_or_create(user_id=request.user.id)[0]
         order = Order.objects.create(user_id=request.user.id, date_order=datetime.now(), qty=user_cart.number_of_articles, tot=user_cart.price)
 
+        # Create OrderItem for each Item in the ShoppingCart
+        
         for piz_item in user_cart.pizzas.values():
             order_pizza = OrderItem.objects.create(order_id=order.pk)
             order_pizza.pizzas.add(Pizza.objects.get(id=piz_item['piz_id']))
@@ -190,6 +194,9 @@ def confirm(request):
             
         orderitem_qs = OrderItem.objects.filter(order_id=order.id).all()
 
+
+        # Get corresponding product for each OrderItem
+        
         pizzas = []
         subs = []
         pastas = []
